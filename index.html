@@ -222,11 +222,20 @@ var url = "https://example.com/recurso?timestamp=" + timestamp;
 
     // Função para criar um card com base nos dados fornecidos
     function createCard(app, index) {
-        var card = document.createElement("div");
-        card.className = "card";
-        card.draggable = true; // Torna o card arrastável
-        card.setAttribute('data-index', index); // Adiciona o índice do card como um atributo
+        // Verifica se o cartão já existe no DOM e atualiza-o se existir
+        var card = cardElements[index];
+        if (!card) {
+            card = document.createElement("div");
+            cardElements[index] = card;
+        } else {
+            card.innerHTML = ''; // Limpa o conteúdo existente do cartão
+        }
 
+        card.className = "card";
+        card.draggable = true;
+        card.setAttribute('data-index', index);
+
+        // Cria os elementos do cartão (heading, img, para, link) como antes...
         var heading = document.createElement("h2");
         heading.innerText = app.text1;
 
@@ -244,12 +253,16 @@ var url = "https://example.com/recurso?timestamp=" + timestamp;
         link.innerText = app.text;
         link.target = "_blank"; // Configura o link para abrir em uma nova aba
 
-        // Adiciona os elementos ao card
+        // Adiciona os elementos ao cartão
         card.appendChild(heading);
         card.appendChild(img);
         card.appendChild(para);
         card.appendChild(link);
 
+        // Se o cartão não estiver presente no DOM, adiciona-o ao corpo do documento
+        if (!card.parentElement) {
+            document.body.appendChild(card);
+        }
         // Adiciona o card ao corpo do documento
         document.body.appendChild(card);
 
@@ -261,7 +274,20 @@ var url = "https://example.com/recurso?timestamp=" + timestamp;
         card.addEventListener('drop', handleDrop, false);
         card.addEventListener('dragend', handleDragEnd, false);
     }
-
+    
+    localforage.getItem('cardOrder').then(function(order) {
+        if (order) {
+            // Reorganizar os cartões com base na ordem armazenada
+            order.forEach(function(index) {
+                createCard(appData[index], index);
+            });
+        } else {
+            // Se a ordem ainda não estiver no cache, criar os cartões na ordem padrão
+            appData.forEach(function(app, index) {
+                createCard(app, index);
+            });
+        }
+    });
     // Variável para armazenar o índice do card sendo arrastado
     var dragSrcEl = null;
 
