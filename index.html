@@ -206,19 +206,20 @@ var timestamp = new Date().getTime();
 var url = "https://example.com/recurso?timestamp=" + timestamp;
 
 // Use a URL com o parâmetro de data e hora atual
-    localforage.getItem('cardOrder').then(function(order) {
-    if (order) {
-        // Reorganizar os cards com base na ordem armazenada
-        order.forEach(function(index) {
-            createCard(appData[index], index);
-        });
-    } else {
-        // Se a ordem ainda não estiver no cache, criar os cards na ordem padrão
-        appData.forEach(function(app, index) {
-            createCard(app, index);
-        });
-    }
-});
+    
+localforage.getItem('cardOrder').then(function(order) {
+        if (order) {
+            // Reorganizar os cartões com base na ordem armazenada
+            order.forEach(function(index) {
+                createCard(appData[index], index);
+            });
+        } else {
+            // Se a ordem ainda não estiver no cache, criar os cartões na ordem padrão
+            appData.forEach(function(app, index) {
+                createCard(app, index);
+            });
+        }
+    });
 
     // Função para criar um card com base nos dados fornecidos
     function createCard(app, index) {
@@ -274,20 +275,7 @@ var url = "https://example.com/recurso?timestamp=" + timestamp;
         card.addEventListener('drop', handleDrop, false);
         card.addEventListener('dragend', handleDragEnd, false);
     }
-    
-    localforage.getItem('cardOrder').then(function(order) {
-        if (order) {
-            // Reorganizar os cartões com base na ordem armazenada
-            order.forEach(function(index) {
-                createCard(appData[index], index);
-            });
-        } else {
-            // Se a ordem ainda não estiver no cache, criar os cartões na ordem padrão
-            appData.forEach(function(app, index) {
-                createCard(app, index);
-            });
-        }
-    });
+
     // Variável para armazenar o índice do card sendo arrastado
     var dragSrcEl = null;
 
