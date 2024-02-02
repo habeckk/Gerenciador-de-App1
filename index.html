@@ -206,37 +206,27 @@ var timestamp = new Date().getTime();
 var url = "https://example.com/recurso?timestamp=" + timestamp;
 
 // Use a URL com o parâmetro de data e hora atual
-    
-localforage.getItem('cardOrder').then(function(order) {
-        if (order) {
-            // Reorganizar os cartões com base na ordem armazenada
-            order.forEach(function(index) {
-                createCard(appData[index], index);
-            });
-        } else {
-            // Se a ordem ainda não estiver no cache, criar os cartões na ordem padrão
-            appData.forEach(function(app, index) {
-                createCard(app, index);
-            });
-        }
-    });
+    localforage.getItem('cardOrder').then(function(order) {
+    if (order) {
+        // Reorganizar os cards com base na ordem armazenada
+        order.forEach(function(index) {
+            createCard(appData[index], index);
+        });
+    } else {
+        // Se a ordem ainda não estiver no cache, criar os cards na ordem padrão
+        appData.forEach(function(app, index) {
+            createCard(app, index);
+        });
+    }
+});
 
     // Função para criar um card com base nos dados fornecidos
     function createCard(app, index) {
-        // Verifica se o cartão já existe no DOM e atualiza-o se existir
-        var card = cardElements[index];
-        if (!card) {
-            card = document.createElement("div");
-            cardElements[index] = card;
-        } else {
-            card.innerHTML = ''; // Limpa o conteúdo existente do cartão
-        }
-
+        var card = document.createElement("div");
         card.className = "card";
-        card.draggable = true;
-        card.setAttribute('data-index', index);
+        card.draggable = true; // Torna o card arrastável
+        card.setAttribute('data-index', index); // Adiciona o índice do card como um atributo
 
-        // Cria os elementos do cartão (heading, img, para, link) como antes...
         var heading = document.createElement("h2");
         heading.innerText = app.text1;
 
@@ -254,16 +244,12 @@ localforage.getItem('cardOrder').then(function(order) {
         link.innerText = app.text;
         link.target = "_blank"; // Configura o link para abrir em uma nova aba
 
-        // Adiciona os elementos ao cartão
+        // Adiciona os elementos ao card
         card.appendChild(heading);
         card.appendChild(img);
         card.appendChild(para);
         card.appendChild(link);
 
-        // Se o cartão não estiver presente no DOM, adiciona-o ao corpo do documento
-        if (!card.parentElement) {
-            document.body.appendChild(card);
-        }
         // Adiciona o card ao corpo do documento
         document.body.appendChild(card);
 
