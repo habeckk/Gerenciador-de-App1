@@ -6,6 +6,7 @@
     <title>Gerenciador de Aplicativos</title>
     <link rel="icon" type="image/png" href="https://habeckk.github.io/Gerenciador-de-App1/img/icons8-aprendizagem-96.png">
     <style>
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -16,36 +17,50 @@
         }
 
         .card {
-    padding: 10px;
-    margin: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    transition: box-shadow 0.3s ease-in-out;
-    cursor: grab;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 150px;
-    height: 400px;
-}
+            display:block;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+            cursor: grab;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 400px;
+        }
 
         .card:hover {
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
         }
 
+        h2 {
+            width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
+            height: 30px; /* Defina a altura desejada */
+
+        }
+
         .button {
-            display: inline-block;
-            margin-top: 10px;
+            bottom: 20px; /* Distância do fundo da janela do navegador */
+            right: 20px; /* Distância da direita da janela do navegador */
             padding: 10px;
             background-color: #3498db;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
+            /* Remova margin-top: 150px; pois não é necessário com position: fixed */
         }
-
+                
+        .card img {
+            width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
+            height: 150px; /* Defina a altura desejada */
+            overflow: hidden; /* Para garantir que o texto não ultrapasse o tamanho definido */
+            transition: transform 0.3s ease-in-out;
+        }
+        
         .card:hover img {
             transform: scale(1.1);
         }
@@ -53,33 +68,16 @@
         .drag-over {
             border: 2px dashed #3498db;
         }
+        
         .card p {
             font-size: 14px;
             width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
+            height: 100px; /* Defina a altura desejada */
             overflow: hidden; /* Para garantir que o texto não ultrapasse o tamanho definido */
-            height: 80px; /* Defina a altura desejada */
             justify-content: center; /* Centralizamos verticalmente */
             align-items: center; /* Centralizamos horizontalmente */
-
         }
-        .card img {
-            max-width: 100%; /* A imagem ocupará toda a largura do cartão */
-            height: auto; /* A altura será ajustada automaticamente para manter a proporção */
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .card .desc {
-            width: 0%; /* Define a largura do campo de descrição para 80% da largura do cartão */
-            height: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px; /* Adiciona um espaço entre a imagem e a descrição */
-        }
+        
     </style>
 </head>
 <body>
@@ -132,7 +130,7 @@ function teste() {
             text: "Abrir"
         },
         {
-            text1: "Bard",
+            text1: "Gemini",
             link: "https://bard.google.com/chat",
             imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/Google_Bard_logo.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
             desc: "Uma nova forma de escrever com IA, ajudando na geração de texto e ideias criativas.",
@@ -208,7 +206,78 @@ function teste() {
             desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
             text: "Abrir"
         },
+        {
+            text1: "Figma",
+            link: "https://www.figma.com/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-figma-80.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
+            text: "Abrir"
+        },
+        {
+            text1: "Proto.io",
+            link: "https://proto.io/en/signin/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-proto-io-96.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
+            text: "Abrir"
+        },
 
+
+        {
+            text1: "Codepen.io",
+            link: "https://codepen.io/pen",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-codepen.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Plataforma de desenvolvimento front-end para experimentar e compartilhar código HTML, CSS e JavaScript.",
+            text: "Abrir"
+        },
+        {
+            text1: "JsFiddle",
+            link: "https://jsfiddle.net/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-jsfiddle.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Editor online para testar e compartilhar trechos de código HTML, CSS e JavaScript.",
+            text: "Abrir"
+        },
+        {
+            text1: "Markodenic",
+            link: "https://markodenic.com/tools/buttons-generator/#header",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-botão.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Gerador de botões online para projetos web.",
+            text: "Abrir"
+        },
+        {
+            text1: "GetBootstrap",
+            link: "https://getbootstrap.com/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-bootstrap.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Framework front-end para desenvolvimento ágil de sites e aplicativos responsivos.",
+            text: "Abrir"
+        },
+        {
+            text1: "Bulma.io",
+            link: "https://bulma.io/documentation/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/bulma-logo.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Framework CSS moderno baseado em flexbox para construir interfaces web responsivas.",
+            text: "Abrir"
+        },
+        {
+            text1: "Devdocs.io",
+            link: "https://devdocs.io/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-quatro-quadrados-96.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Documentação unificada para várias tecnologias de desenvolvimento, acessível offline.",
+            text: "Abrir"
+        },
+        {
+            text1: "PageSpeed",
+            link: "https://pagespeed.web.dev/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/pagespeed.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Ferramenta do Google para analisar e otimizar a velocidade de carregamento de páginas da web.",
+            text: "Abrir"
+        },
+        {
+            text1: "Hoppscotch",
+            link: "https://hoppscotch.io/",
+            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/hoppscotch.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
+            desc: "Cliente HTTP online para testar e depurar APIs RESTful.",
+            text: "Abrir"
+        },
 
     ];
 
