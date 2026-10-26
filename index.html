@@ -1,441 +1,1060 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Aplicativos</title>
-    <link rel="icon" type="image/png" href="https://habeckk.github.io/Gerenciador-de-App1/img/icons8-aprendizagem-96.png">
+    <meta name="description" content="Atalhos para as melhores ferramentas web gratuitas para quem programa: IA, código, APIs, design e utilidades.">
+    <link rel="icon" type="image/png" href="img/icons8-aprendizagem-96.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // Aplica o tema salvo antes de pintar a página, para não piscar
+        try {
+            var temaSalvo = localStorage.getItem('tema');
+            if (temaSalvo) document.documentElement.setAttribute('data-theme', temaSalvo);
+        } catch (e) {}
+    </script>
     <style>
+        :root {
+            --bg: #f6f7fb;
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-solid: #ffffff;
+            --border: rgba(15, 23, 42, 0.08);
+            --border-strong: rgba(15, 23, 42, 0.16);
+            --text: #0f172a;
+            --muted: #64748b;
+            --accent: #6366f1;
+            --accent-2: #06b6d4;
+            --accent-soft: rgba(99, 102, 241, 0.10);
+            --star: #f59e0b;
+            --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+            --shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.06), 0 18px 40px rgba(79, 70, 229, 0.16);
+            --blob-1: rgba(99, 102, 241, 0.22);
+            --blob-2: rgba(6, 182, 212, 0.18);
+            --grid-line: rgba(15, 23, 42, 0.04);
+            color-scheme: light;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0b0f1a;
+                --surface: rgba(20, 26, 42, 0.72);
+                --surface-solid: #141a2a;
+                --border: rgba(148, 163, 184, 0.12);
+                --border-strong: rgba(148, 163, 184, 0.24);
+                --text: #e2e8f0;
+                --muted: #94a3b8;
+                --accent: #818cf8;
+                --accent-2: #22d3ee;
+                --accent-soft: rgba(129, 140, 248, 0.14);
+                --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+                --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.3), 0 18px 40px rgba(99, 102, 241, 0.22);
+                --blob-1: rgba(99, 102, 241, 0.20);
+                --blob-2: rgba(6, 182, 212, 0.12);
+                --grid-line: rgba(148, 163, 184, 0.05);
+                color-scheme: dark;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0b0f1a;
+            --surface: rgba(20, 26, 42, 0.72);
+            --surface-solid: #141a2a;
+            --border: rgba(148, 163, 184, 0.12);
+            --border-strong: rgba(148, 163, 184, 0.24);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #818cf8;
+            --accent-2: #22d3ee;
+            --accent-soft: rgba(129, 140, 248, 0.14);
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+            --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.3), 0 18px 40px rgba(99, 102, 241, 0.22);
+            --blob-1: rgba(99, 102, 241, 0.20);
+            --blob-2: rgba(6, 182, 212, 0.12);
+            --grid-line: rgba(148, 163, 184, 0.05);
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color .3s ease, color .3s ease;
+        }
+
+        /* Fundo: grade sutil + duas manchas de cor que flutuam */
+        .fundo {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse at top, #000 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at top, #000 30%, transparent 75%);
+        }
+
+        .blob {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: flutuar 18s ease-in-out infinite alternate;
+        }
+
+        .blob.um { background: var(--blob-1); top: -160px; left: -80px; }
+        .blob.dois { background: var(--blob-2); top: -120px; right: -120px; animation-delay: -9s; }
+
+        @keyframes flutuar {
+            0%   { transform: translate(0, 0) scale(1); }
+            50%  { transform: translate(80px, 60px) scale(1.12); }
+            100% { transform: translate(-40px, 120px) scale(0.95); }
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 16px 64px;
+        }
+
+        /* Cabeçalho */
+        header.topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 0;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .marca img {
+            width: 32px;
+            height: 32px;
+            padding: 4px;
+            border-radius: 10px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+        }
+
+        .acoes-topo { display: flex; gap: 8px; }
+
+        .botao-icone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 38px;
+            min-width: 38px;
+            padding: 0 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            backdrop-filter: blur(8px);
+            color: var(--text);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: border-color .2s, transform .2s;
+        }
+
+        .botao-icone:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+        .botao-icone svg { width: 18px; height: 18px; }
+
+        .icone-sol { display: none; }
+        :root[data-theme="dark"] .icone-sol { display: block; }
+        :root[data-theme="dark"] .icone-lua { display: none; }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) .icone-sol { display: block; }
+            :root:not([data-theme="light"]) .icone-lua { display: none; }
+        }
+
+        /* Destaque */
+        .hero {
+            text-align: center;
+            padding: 48px 0 32px;
+            animation: subir .7s cubic-bezier(.2, .8, .2, 1) both;
+        }
+
+        .selo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .selo .ponto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, .6);
+            animation: pulsar 2s infinite;
+        }
+
+        @keyframes pulsar {
+            70%  { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .hero h1 {
+            margin: 18px 0 12px;
+            font-size: clamp(32px, 6vw, 56px);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            font-weight: 800;
+        }
+
+        .gradiente {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: brilho 6s linear infinite;
+        }
+
+        @keyframes brilho { to { background-position: 200% center; } }
+
+        .hero p {
+            max-width: 560px;
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        /* Busca */
+        .busca {
+            position: relative;
+            max-width: 560px;
+            margin: 28px auto 0;
+        }
+
+        .busca svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .busca input {
+            width: 100%;
+            height: 54px;
+            padding: 0 64px 0 48px;
+            border-radius: 14px;
+            border: 1px solid var(--border-strong);
+            background: var(--surface-solid);
+            color: var(--text);
+            font: inherit;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .busca input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow);
+        }
+
+        .busca kbd {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-strong);
+            font: 500 12px 'Inter', sans-serif;
+            color: var(--muted);
+        }
+
+        /* Filtros de categoria */
+        .filtros {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-around;
+            justify-content: center;
+            gap: 8px;
+            margin: 24px 0 8px;
+        }
+
+        .chip {
+            display: inline-flex;
             align-items: center;
-            padding: 10px;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .chip:hover { color: var(--text); border-color: var(--border-strong); }
+
+        .chip.ativo {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 6px 18px rgba(99, 102, 241, .3);
+        }
+
+        .chip .qtd { opacity: .7; font-size: 12px; }
+
+        .resumo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 28px 0 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Grade de cards */
+        .grade {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 14px;
         }
 
         .card {
-            display:block;
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            transition: box-shadow 0.3s ease-in-out;
-            cursor: grab;
+            position: relative;
+            display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 12px;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            animation: subir .5s cubic-bezier(.2, .8, .2, 1) both;
+            animation-delay: calc(var(--i, 0) * 22ms);
+            transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s, border-color .25s;
+        }
+
+        /* Luz que segue o mouse dentro do card */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 45%);
+            opacity: 0;
+            transition: opacity .3s;
+            pointer-events: none;
+        }
+
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+        .card:hover::before { opacity: 1; }
+        .card:focus-within { border-color: var(--accent); }
+
+        .card.arrastando { opacity: .4; transform: scale(.97); }
+        .card.alvo { border: 1px dashed var(--accent); }
+
+        @keyframes subir {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-topo {
+            display: flex;
             align-items: center;
-            width: 150px;
-            height: 400px;
+            gap: 12px;
         }
 
-        .card:hover {
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+        .logo {
+            flex: none;
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: transform .35s cubic-bezier(.2, .8, .2, 1);
         }
 
-        h2 {
-            width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
-            height: 30px; /* Defina a altura desejada */
+        .card:hover .logo { transform: rotate(-6deg) scale(1.08); }
 
+        .logo img { width: 32px; height: 32px; object-fit: contain; }
+
+        .logo .letra {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--accent);
         }
 
-        .button {
-            bottom: 20px; /* Distância do fundo da janela do navegador */
-            right: 20px; /* Distância da direita da janela do navegador */
-            padding: 10px;
-            background-color: #3498db;
+        .titulo { min-width: 0; }
+
+        .titulo h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .titulo .cat {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .novo {
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            /* Remova margin-top: 150px; pois não é necessário com position: fixed */
-        }
-                
-        .card img {
-            width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
-            height: 150px; /* Defina a altura desejada */
-            overflow: hidden; /* Para garantir que o texto não ultrapasse o tamanho definido */
-            transition: transform 0.3s ease-in-out;
-        }
-        
-        .card:hover img {
-            transform: scale(1.1);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
         }
 
-        .drag-over {
-            border: 2px dashed #3498db;
-        }
-        
         .card p {
+            margin: 0;
+            flex: 1;
+            color: var(--muted);
             font-size: 14px;
-            width: 150px; /* Defina o valor desejado para a largura do campo de descrição */
-            height: 100px; /* Defina a altura desejada */
-            overflow: hidden; /* Para garantir que o texto não ultrapasse o tamanho definido */
-            justify-content: center; /* Centralizamos verticalmente */
-            align-items: center; /* Centralizamos horizontalmente */
+            line-height: 1.55;
         }
-        
+
+        .card-rodape {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .dominio { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .abrir {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .abrir svg { width: 14px; height: 14px; transition: transform .25s; }
+        .card:hover .abrir svg { transform: translate(2px, -2px); }
+
+        /* O link cobre o card inteiro; a estrela fica por cima */
+        .card-link {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            z-index: 1;
+        }
+
+        .card-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        .estrela {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity .2s, color .2s, background .2s, transform .2s;
+        }
+
+        .estrela svg { width: 18px; height: 18px; }
+        .card:hover .estrela, .estrela:focus-visible, .estrela.marcada { opacity: 1; }
+        .estrela:hover { background: var(--accent-soft); color: var(--star); }
+        .estrela.marcada { color: var(--star); }
+        .estrela.marcada svg { fill: currentColor; }
+        .estrela.pop { animation: pop .4s ease; }
+
+        @keyframes pop {
+            40% { transform: scale(1.35) rotate(-12deg); }
+            100% { transform: scale(1); }
+        }
+
+        @media (hover: none) {
+            .estrela { opacity: 1; }
+            .dica { display: none; }
+        }
+
+        .vazio {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 16px;
+            color: var(--muted);
+        }
+
+        .vazio strong { display: block; color: var(--text); font-size: 18px; margin-bottom: 6px; }
+
+        footer {
+            margin-top: 56px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Aviso rápido */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translate(-50%, 20px);
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: var(--text);
+            color: var(--bg);
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s, transform .25s;
+            z-index: 10;
+        }
+
+        .toast.visivel { opacity: 1; transform: translate(-50%, 0); }
+
+        @media (max-width: 600px) {
+            .hero { padding: 24px 0 16px; }
+            .hero p { font-size: 15px; }
+            .busca kbd { display: none; }
+            .busca input { padding-right: 16px; }
+            .filtros { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 0 16px 6px; scrollbar-width: none; }
+            .filtros::-webkit-scrollbar { display: none; }
+            .chip { flex: none; }
+            .rotulo-tema { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
-<!-- Variáveis JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <div class="fundo" aria-hidden="true">
+        <div class="blob um"></div>
+        <div class="blob dois"></div>
+    </div>
+
+    <div class="container">
+        <header class="topo">
+            <a class="marca" href="./">
+                <img src="img/icons8-aprendizagem-96.png" alt="">
+                Gerenciador de Apps
+            </a>
+            <div class="acoes-topo">
+                <a class="botao-icone" href="https://github.com/habeckk/Gerenciador-de-App1" target="_blank" rel="noopener" title="Código no GitHub" aria-label="Código no GitHub">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+                </a>
+                <button class="botao-icone" id="alternarTema" type="button" aria-label="Alternar tema claro/escuro">
+                    <svg class="icone-lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="icone-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    <span class="rotulo-tema">Tema</span>
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <span class="selo"><span class="ponto"></span><span id="contagem">Ferramentas gratuitas</span></span>
+            <h1>Tudo que você usa para <span class="gradiente">programar</span>,<br>em um só lugar.</h1>
+            <p>Atalhos para IA, editores, APIs, design e utilidades. Busque, filtre por categoria e marque com estrela as que você mais usa.</p>
+
+            <div class="busca">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input id="busca" type="search" placeholder="Buscar ferramenta, ex.: json, ícones, sql..." autocomplete="off" aria-label="Buscar ferramenta">
+                <kbd>/</kbd>
+            </div>
+        </section>
+
+        <nav class="filtros" id="filtros" aria-label="Categorias"></nav>
+
+        <div class="resumo">
+            <span id="resumo"></span>
+            <span class="dica">Dica: arraste os cards para mudar a ordem · Enter abre o primeiro resultado</span>
+        </div>
+
+        <main class="grade" id="grade"></main>
+
+        <footer>
+            Feito por <a href="https://github.com/habeckk" target="_blank" rel="noopener">habeckk</a> ·
+            Sentiu falta de alguma? <a href="https://github.com/habeckk/Gerenciador-de-App1/issues/new" target="_blank" rel="noopener">Sugira uma ferramenta</a>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+    var categorias = {
+        ia:     'IA',
+        codigo: 'Código',
+        api:    'APIs & Dados',
+        design: 'Design',
+        ui:     'UI & Frameworks',
+        docs:   'Aprender',
+        util:   'Utilidades',
+        iot:    'Hardware & IoT'
+    };
 
-function teste() {
-        const { exec } = require('child_process');
-
-    // Substitua 'seu_programa.exe' pelo caminho real do seu executável
-    const programaExe = 'C:/Users/ferna/AppData/Local/Programs/Microsoft VS Code/Code.exe';
-
-    exec(programaExe, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Erro ao executar o programa: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.error(`Erro do programa: ${stderr}`);
-        return;
-    }
-    console.log(`Saída do programa: ${stdout}`);
-    });
-
-}
-
+    // img: logo local na pasta img/. Sem img, o logo vem do favicon do site.
+    // novo: aparece com o selo "Novo".
     var appData = [
+        // IA
+        { id: 'claude', nome: 'Claude', link: 'https://claude.ai/', cat: 'ia', novo: true,
+          desc: 'Assistente de IA da Anthropic, forte em código, textos longos e análise de documentos e planilhas.' },
+        { id: 'chatgpt', nome: 'ChatGPT', link: 'https://chatgpt.com/', cat: 'ia', img: 'img/icons8-chatgpt.svg',
+          desc: 'Assistente de IA da OpenAI para conversar, gerar código, revisar textos e criar imagens.' },
+        { id: 'gemini', nome: 'Gemini', link: 'https://gemini.google.com/app', cat: 'ia', img: 'img/Google_Bard_logo.svg',
+          desc: 'IA do Google integrada ao Gmail, Drive e Docs; boa para pesquisa e ideias criativas.' },
+        { id: 'copilot', nome: 'Copilot', link: 'https://copilot.microsoft.com/', cat: 'ia', img: 'img/9759dc3bced042989f176efa44fc0fa0.png',
+          desc: 'Assistente de IA da Microsoft com busca na web, geração de código e resumo de páginas.' },
+        { id: 'perplexity', nome: 'Perplexity', link: 'https://www.perplexity.ai/', cat: 'ia', novo: true,
+          desc: 'Buscador com IA que responde em texto corrido e mostra as fontes de cada informação.' },
+        { id: 'notebooklm', nome: 'NotebookLM', link: 'https://notebooklm.google.com/', cat: 'ia', novo: true,
+          desc: 'Envie PDFs, planilhas e links e converse com eles; gera resumos, mapas mentais e áudio.' },
 
-        {
-            text1: "Copiloto",
-            link: "https://www.bing.com/search?q=Bing%20AI&showconv=1&form=MA13FV&wlexpsignin=1",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/9759dc3bced042989f176efa44fc0fa0.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Um assistente de codificação por IA que oferece sugestões de código em tempo real",
-            text: "Abrir"
-        },
-        {
-            text1: "Openai",
-            link: "https://chat.openai.com/c/c350cb23-2215-4222-8f4d-6ebc82b4df0f",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-chatgpt.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de inteligência artificial para criar e implantar modelos de IA avançados.",
-            text: "Abrir"
-        },
-        {
-            text1: "Gemini",
-            link: "https://bard.google.com/chat",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/Google_Bard_logo.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Uma nova forma de escrever com IA, ajudando na geração de texto e ideias criativas.",
-            text: "Abrir"
-        },
-        {
-            text1: "Wakatime",
-            link: "https://wakatime.com/dashboard",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/wakatime.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Monitora o tempo gasto codificando para melhorar a produtividade e a eficiência do desenvolvedor.",
-            text: "Abrir"
-        },
-        {
-            text1: "Icons8",
-            link: "https://icons8.com.br/icons",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/novo-logotipo.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Oferece ícones gratuitos e ferramentas de design para criar interfaces visuais atraentes.",
-            text: "Abrir"
-        },
-        {
-            text1: "GitHub",
-            link: "https://github.com/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-github.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de desenvolvimento colaborativo, permitindo hospedar e revisar código, gerenciar projetos e mais.",
-            text: "Abrir"
-        },
-        {
-            text1: "VScode",
-            link: "https://vscode.dev/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-visual-studio-code-2019.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Um editor de código-fonte leve e poderoso, altamente personalizável, desenvolvido pela Microsoft.",
-            text: "Abrir"
-        },
-        {
-            text1: "Fonts Google",
-            link: "https://fonts.google.com/icons",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-fontes-do-google.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Biblioteca de fontes gratuitas para melhorar a tipografia e o design em projetos da web.",
-            text: "Abrir"
-        },
-        {
-            text1: "DRAW.IO",
-            link: "https://app.diagrams.net/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/drawio.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Ferramenta de diagramação online gratuita para criar diagramas, fluxogramas e wireframes.",
-            text: "Abrir"
-        },
-        {
-            text1: "w3schools",
-            link: "https://www.w3schools.com/html/tryit.asp?filename=tryhtml_intro",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/wwww3schools.jpg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Um recurso de aprendizado online que oferece tutoriais, referências e exemplos de código.",
-            text: "Abrir"
-        },
-        {
-            text1: "Labelary",
-            link: "https://labelary.com/viewer.html",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/labelary.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Um recurso de aprendizado online que oferece tutoriais, referências e exemplos de código.",
-            text: "Abrir"
-        },
-        {
-            text1: "File Browser",
-            link: "https://filebrowser.org/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/Cover.webp", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Aplicativo de navegação de arquivos, permite explorar e gerenciar documentos, mídia e pastas em dispositivos móveis e na nuvem.",
-            text: "Abrir"
-        },
-        {
-            text1: "Firebase",
-            link: "https://console.firebase.google.com/?hl=pt",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-firebase.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de desenvolvimento de aplicativos, oferece serviços de banco de dados, autenticação, armazenamento e análise em tempo real.",
-            text: "Abrir"
-        },
-        {
-            text1: "Postman",
-            link: "https://web.postman.co/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-postman-96.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
-            text: "Abrir"
-        },
-        {
-            text1: "Figma",
-            link: "https://www.figma.com/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-figma-80.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
-            text: "Abrir"
-        },
-        {
-            text1: "Proto.io",
-            link: "https://proto.io/en/signin/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-proto-io-96.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de colaboração para desenvolvimento de API, permitindo testar, documentar e compartilhar APIs de forma eficiente.",
-            text: "Abrir"
-        },
+        // Código
+        { id: 'github', nome: 'GitHub', link: 'https://github.com/', cat: 'codigo', img: 'img/icons8-github.svg',
+          desc: 'Hospede repositórios, revise código, gerencie projetos e publique sites com o GitHub Pages.' },
+        { id: 'vscode', nome: 'VS Code Web', link: 'https://vscode.dev/', cat: 'codigo', img: 'img/icons8-visual-studio-code-2019.svg',
+          desc: 'O VS Code direto no navegador: abra pastas locais ou repositórios do GitHub sem instalar nada.' },
+        { id: 'stackblitz', nome: 'StackBlitz', link: 'https://stackblitz.com/', cat: 'codigo', novo: true,
+          desc: 'IDE no navegador que roda Node.js: crie projetos React, Vue, Angular ou Vite em segundos.' },
+        { id: 'codepen', nome: 'CodePen', link: 'https://codepen.io/pen', cat: 'codigo', img: 'img/icons8-codepen.svg',
+          desc: 'Teste e compartilhe trechos de HTML, CSS e JavaScript com pré-visualização ao vivo.' },
+        { id: 'jsfiddle', nome: 'JSFiddle', link: 'https://jsfiddle.net/', cat: 'codigo', img: 'img/icons8-jsfiddle.svg',
+          desc: 'Editor online para testar e compartilhar trechos de código HTML, CSS e JavaScript.' },
+        { id: 'regex101', nome: 'regex101', link: 'https://regex101.com/', cat: 'codigo', novo: true,
+          desc: 'Teste expressões regulares com explicação de cada parte e destaque das correspondências.' },
+        { id: 'carbon', nome: 'Carbon', link: 'https://carbon.now.sh/', cat: 'codigo', novo: true,
+          desc: 'Transforma trechos de código em imagens bonitas para documentação e apresentações.' },
 
+        // APIs & Dados
+        { id: 'postman', nome: 'Postman', link: 'https://web.postman.co/', cat: 'api', img: 'img/icons8-postman-96.png',
+          desc: 'Teste, documente e compartilhe APIs com coleções, variáveis de ambiente e testes automáticos.' },
+        { id: 'hoppscotch', nome: 'Hoppscotch', link: 'https://hoppscotch.io/', cat: 'api', img: 'img/hoppscotch.png',
+          desc: 'Cliente HTTP leve e open source no navegador para testar APIs REST, GraphQL e WebSocket.' },
+        { id: 'webhooksite', nome: 'Webhook.site', link: 'https://webhook.site/', cat: 'api', novo: true,
+          desc: 'Gera uma URL na hora para capturar e inspecionar requisições HTTP e webhooks recebidos.' },
+        { id: 'jsoncrack', nome: 'JSON Crack', link: 'https://jsoncrack.com/editor', cat: 'api', novo: true,
+          desc: 'Transforma JSON, YAML ou CSV em um grafo visual navegável; ótimo para respostas grandes de API.' },
+        { id: 'jwt', nome: 'JWT.io', link: 'https://jwt.io/', cat: 'api', novo: true,
+          desc: 'Decodifique um token JWT e veja cabeçalho, conteúdo e validade da assinatura.' },
+        { id: 'transform', nome: 'Transform', link: 'https://transform.tools/', cat: 'api', novo: true,
+          desc: 'Converte JSON em TypeScript, YAML, SQL, Go e outros formatos com um clique.' },
+        { id: 'dbfiddle', nome: 'DB Fiddle', link: 'https://www.db-fiddle.com/', cat: 'api', novo: true,
+          desc: 'Rode SQL em MySQL, PostgreSQL ou SQLite no navegador e compartilhe o exemplo por link.' },
+        { id: 'dbdiagram', nome: 'dbdiagram.io', link: 'https://dbdiagram.io/', cat: 'api', novo: true,
+          desc: 'Desenhe o modelo do banco escrevendo texto (DBML) e exporte o SQL de criação das tabelas.' },
+        { id: 'firebase', nome: 'Firebase', link: 'https://console.firebase.google.com/?hl=pt', cat: 'api', img: 'img/icons8-firebase.svg',
+          desc: 'Banco de dados em tempo real, autenticação, hospedagem e armazenamento do Google.' },
 
-        {
-            text1: "Codepen.io",
-            link: "https://codepen.io/pen",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-codepen.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de desenvolvimento front-end para experimentar e compartilhar código HTML, CSS e JavaScript.",
-            text: "Abrir"
-        },
-        {
-            text1: "JsFiddle",
-            link: "https://jsfiddle.net/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-jsfiddle.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Editor online para testar e compartilhar trechos de código HTML, CSS e JavaScript.",
-            text: "Abrir"
-        },
-        {
-            text1: "Markodenic",
-            link: "https://markodenic.com/tools/buttons-generator/#header",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-botão.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Gerador de botões online para projetos web.",
-            text: "Abrir"
-        },
-        {
-            text1: "GetBootstrap",
-            link: "https://getbootstrap.com/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-bootstrap.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Framework front-end para desenvolvimento ágil de sites e aplicativos responsivos.",
-            text: "Abrir"
-        },
-        {
-            text1: "Bulma.io",
-            link: "https://bulma.io/documentation/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/bulma-logo.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Framework CSS moderno baseado em flexbox para construir interfaces web responsivas.",
-            text: "Abrir"
-        },
-        {
-            text1: "Devdocs.io",
-            link: "https://devdocs.io/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-quatro-quadrados-96.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Documentação unificada para várias tecnologias de desenvolvimento, acessível offline.",
-            text: "Abrir"
-        },
-        {
-            text1: "PageSpeed",
-            link: "https://pagespeed.web.dev/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/pagespeed.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Ferramenta do Google para analisar e otimizar a velocidade de carregamento de páginas da web.",
-            text: "Abrir"
-        },
-        {
-            text1: "Hoppscotch",
-            link: "https://hoppscotch.io/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/hoppscotch.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Cliente HTTP online para testar e depurar APIs RESTful.",
-            text: "Abrir"
-        },
-        {
-            text1: "QR.io",
-            link: "https://qr.io/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/QRio.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Serviço para criar e escanear códigos QR, facilitando o compartilhamento de informações em dispositivos móveis.",
-            text: "Abrir"
-        },
-        {
-            text1: "QR Code Generator",
-            link: "https://br.qr-code-generator.com/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/QR Code Generator.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Ferramenta online para gerar códigos QR personalizados com URL, texto, números e outros dados.",
-            text: "Abrir"
-        },
-        {
-            text1: "Arduino",
-            link: "https://create.arduino.cc/editor",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/icons8-arduino.svg", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Plataforma de desenvolvimento online da Arduino, projetada para escrever, compartilhar e simular código para projetos de Arduino diretamente no navegador.",
-            text: "Abrir"
-        },
-        {
-            text1: "Mui",
-            link: "https://mui.com/material-ui/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/Mui.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Oferece componentes React para criar interfaces seguindo o Material Design do Google, facilitando o desenvolvimento de UIs elegantes e funcionais.",
-            text: "Abrir"
-        },
-        {
-            text1: "Node-RED",
-            link: "https://nodered.org/",
-            imgSrc: "https://habeckk.github.io/Gerenciador-de-App1/img/Node-red-icon.png", // Substitua 'URL_DA_IMAGEM' pela URL da imagem que você quer usar
-            desc: "Node-RED é uma ferramenta visual para integrar dispositivos, APIs e serviços online, simplificando o desenvolvimento de aplicações IoT com uma interface gráfica.",
-            text: "Abrir"
-        },
+        // Design
+        { id: 'figma', nome: 'Figma', link: 'https://www.figma.com/', cat: 'design', img: 'img/icons8-figma-80.svg',
+          desc: 'Design de interfaces colaborativo no navegador: telas, protótipos e design systems.' },
+        { id: 'excalidraw', nome: 'Excalidraw', link: 'https://excalidraw.com/', cat: 'design', novo: true,
+          desc: 'Quadro branco com traço de rascunho para esboçar telas, fluxos e arquiteturas rapidinho.' },
+        { id: 'drawio', nome: 'draw.io', link: 'https://app.diagrams.net/', cat: 'design', img: 'img/drawio.png',
+          desc: 'Diagramas, fluxogramas, organogramas e plantas; salva no computador, Drive ou GitHub.' },
+        { id: 'mermaid', nome: 'Mermaid Live', link: 'https://mermaid.live/', cat: 'design', novo: true,
+          desc: 'Escreva diagramas em texto (fluxo, sequência, Gantt) e veja o desenho na hora.' },
+        { id: 'protoio', nome: 'Proto.io', link: 'https://proto.io/', cat: 'design', img: 'img/icons8-proto-io-96.png',
+          desc: 'Protótipos interativos de aplicativos sem código, com animações e teste no celular.' },
+        { id: 'coolors', nome: 'Coolors', link: 'https://coolors.co/', cat: 'design', novo: true,
+          desc: 'Gere paletas de cores apertando a barra de espaço; trave as que gostar e exporte.' },
+        { id: 'realtimecolors', nome: 'Realtime Colors', link: 'https://www.realtimecolors.com/', cat: 'design', novo: true,
+          desc: 'Teste cores e fontes aplicadas num site de exemplo e exporte as variáveis CSS.' },
+        { id: 'squoosh', nome: 'Squoosh', link: 'https://squoosh.app/', cat: 'design', novo: true,
+          desc: 'Comprime e converte imagens para WebP e AVIF no próprio navegador, sem enviar nada.' },
+        { id: 'photopea', nome: 'Photopea', link: 'https://www.photopea.com/', cat: 'design', novo: true,
+          desc: 'Editor de imagens no estilo Photoshop, gratuito e online; abre arquivos PSD.' },
+        { id: 'icons8', nome: 'Icons8', link: 'https://icons8.com.br/icons', cat: 'design', img: 'img/novo-logotipo.svg',
+          desc: 'Ícones, ilustrações e fotos em vários estilos para interfaces e apresentações.' },
+        { id: 'lucide', nome: 'Lucide', link: 'https://lucide.dev/icons/', cat: 'design', novo: true,
+          desc: 'Ícones SVG open source, leves e consistentes; copie o SVG ou use em React e Vue.' },
+        { id: 'fontsgoogle', nome: 'Google Fonts', link: 'https://fonts.google.com/icons', cat: 'design', img: 'img/icons8-fontes-do-google.svg',
+          desc: 'Fontes gratuitas e os ícones Material Symbols para usar em qualquer projeto web.' },
+        { id: 'undraw', nome: 'unDraw', link: 'https://undraw.co/illustrations', cat: 'design', novo: true,
+          desc: 'Ilustrações SVG gratuitas que você recolore com a cor da sua marca.' },
+
+        // UI & Frameworks
+        { id: 'uiverse', nome: 'Uiverse', link: 'https://uiverse.io/', cat: 'ui', novo: true,
+          desc: 'Botões, cards, loaders e inputs em HTML/CSS feitos pela comunidade, prontos para copiar.' },
+        { id: 'markodenic', nome: 'Buttons Generator', link: 'https://markodenic.com/tools/buttons-generator/', cat: 'ui', img: 'img/icons8-botão.png',
+          desc: 'Mais de 100 estilos de botão em CSS puro; clique no que gostar e copie o código.' },
+        { id: 'tailwindplay', nome: 'Tailwind Play', link: 'https://play.tailwindcss.com/', cat: 'ui', novo: true,
+          desc: 'Playground do Tailwind CSS: monte a tela com classes e veja o resultado ao vivo.' },
+        { id: 'bootstrap', nome: 'Bootstrap', link: 'https://getbootstrap.com/', cat: 'ui', img: 'img/icons8-bootstrap.svg',
+          desc: 'Framework CSS com grid e componentes prontos para sites responsivos.' },
+        { id: 'bulma', nome: 'Bulma', link: 'https://bulma.io/documentation/', cat: 'ui', img: 'img/bulma-logo.png',
+          desc: 'Framework CSS moderno baseado em flexbox, sem JavaScript, para interfaces responsivas.' },
+        { id: 'mui', nome: 'MUI', link: 'https://mui.com/material-ui/', cat: 'ui', img: 'img/Mui.png',
+          desc: 'Componentes React no padrão Material Design do Google, prontos para usar.' },
+
+        // Aprender
+        { id: 'mdn', nome: 'MDN Web Docs', link: 'https://developer.mozilla.org/pt-BR/', cat: 'docs', novo: true,
+          desc: 'A referência mais completa de HTML, CSS e JavaScript, com exemplos e compatibilidade.' },
+        { id: 'devdocs', nome: 'DevDocs', link: 'https://devdocs.io/', cat: 'docs', img: 'img/icons8-quatro-quadrados-96.png',
+          desc: 'Documentação de dezenas de linguagens e bibliotecas numa busca só, funciona offline.' },
+        { id: 'w3schools', nome: 'W3Schools', link: 'https://www.w3schools.com/html/tryit.asp?filename=tryhtml_intro', cat: 'docs', img: 'img/wwww3schools.jpg',
+          desc: 'Tutoriais e exemplos de código com editor "Try it" para testar na hora.' },
+        { id: 'roadmap', nome: 'roadmap.sh', link: 'https://roadmap.sh/', cat: 'docs', novo: true,
+          desc: 'Trilhas de estudo passo a passo para frontend, backend, DevOps, SQL, Python e mais.' },
+        { id: 'caniuse', nome: 'Can I use', link: 'https://caniuse.com/', cat: 'docs', novo: true,
+          desc: 'Veja se um recurso de HTML, CSS ou JavaScript funciona em cada navegador e versão.' },
+
+        // Utilidades
+        { id: 'ittools', nome: 'IT Tools', link: 'https://it-tools.tech/', cat: 'util', novo: true,
+          desc: 'Mais de 80 utilitários num lugar só: UUID, hash, Base64, conversores de data e formatadores.' },
+        { id: 'cyberchef', nome: 'CyberChef', link: 'https://gchq.github.io/CyberChef/', cat: 'util', novo: true,
+          desc: 'Canivete suíço para codificar, decodificar, criptografar e transformar dados em cadeia.' },
+        { id: 'crontab', nome: 'Crontab Guru', link: 'https://crontab.guru/', cat: 'util', novo: true,
+          desc: 'Monte e entenda expressões cron; mostra em português claro quando a tarefa vai rodar.' },
+        { id: 'diffchecker', nome: 'Diffchecker', link: 'https://www.diffchecker.com/', cat: 'util', novo: true,
+          desc: 'Compare dois textos, códigos ou planilhas e veja as diferenças lado a lado.' },
+        { id: 'pagespeed', nome: 'PageSpeed Insights', link: 'https://pagespeed.web.dev/', cat: 'util', img: 'img/pagespeed.png',
+          desc: 'Analisa a velocidade de um site no celular e no computador e sugere o que melhorar.' },
+        { id: 'labelary', nome: 'Labelary', link: 'https://labelary.com/viewer.html', cat: 'util', img: 'img/labelary.png',
+          desc: 'Cole código ZPL de impressora Zebra e veja a etiqueta renderizada, pronta para conferir.' },
+        { id: 'qrio', nome: 'QR.io', link: 'https://qr.io/', cat: 'util', img: 'img/QRio.png',
+          desc: 'Crie QR Codes para links, Wi-Fi, contatos e textos, com cores e logo.' },
+        { id: 'qrgenerator', nome: 'QR Code Generator', link: 'https://br.qr-code-generator.com/', cat: 'util', img: 'img/QR Code Generator.png',
+          desc: 'Gere QR Codes personalizados com URL, texto, telefone e outros dados.' },
+        { id: 'wakatime', nome: 'WakaTime', link: 'https://wakatime.com/dashboard', cat: 'util', img: 'img/wakatime.svg',
+          desc: 'Mede o tempo que você passa programando, por projeto e linguagem, direto do editor.' },
+        { id: 'filebrowser', nome: 'File Browser', link: 'https://filebrowser.org/', cat: 'util', img: 'img/Cover.webp',
+          desc: 'Gerenciador de arquivos pela web para instalar no seu servidor: envie, baixe e organize pastas.' },
+
+        // Hardware & IoT
+        { id: 'arduino', nome: 'Arduino Cloud', link: 'https://create.arduino.cc/editor', cat: 'iot', img: 'img/icons8-arduino.svg',
+          desc: 'Escreva e envie código para placas Arduino direto do navegador.' },
+        { id: 'wokwi', nome: 'Wokwi', link: 'https://wokwi.com/', cat: 'iot', novo: true,
+          desc: 'Simule Arduino, ESP32 e Raspberry Pi Pico com sensores e displays, sem ter a placa.' },
+        { id: 'tinkercad', nome: 'Tinkercad Circuits', link: 'https://www.tinkercad.com/circuits', cat: 'iot', novo: true,
+          desc: 'Monte circuitos eletrônicos virtuais com Arduino e teste o código por blocos ou texto.' },
+        { id: 'nodered', nome: 'Node-RED', link: 'https://nodered.org/', cat: 'iot', img: 'img/Node-red-icon.png',
+          desc: 'Ligue dispositivos, APIs e serviços arrastando blocos; muito usado em automação e IoT.' }
     ];
 
-    
-    // Adicione um parâmetro de data e hora à URL
-var timestamp = new Date().getTime();
-var url = "https://example.com/recurso?timestamp=" + timestamp;
+    // ---------- Preferências do usuário (ficam só neste navegador) ----------
+    function lerLista(chave) {
+        try { return JSON.parse(localStorage.getItem(chave)) || []; } catch (e) { return []; }
+    }
 
-// Use a URL com o parâmetro de data e hora atual
-    localforage.getItem('cardOrder').then(function(order) {
-    if (order) {
-        // Reorganizar os cards com base na ordem armazenada
-        order.forEach(function(index) {
-            createCard(appData[index], index);
+    function gravar(chave, valor) {
+        try { localStorage.setItem(chave, JSON.stringify(valor)); } catch (e) {}
+    }
+
+    var favoritos = lerLista('favoritos');
+    var ordem = lerLista('ordem');
+    var filtroAtual = 'todas';
+    var termoAtual = '';
+
+    var grade = document.getElementById('grade');
+    var campoBusca = document.getElementById('busca');
+
+    function dominioDe(url) {
+        return new URL(url).hostname.replace(/^www\./, '');
+    }
+
+    function normalizar(texto) {
+        return texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    }
+
+    // Favoritos primeiro; depois a ordem que o usuário arrastou; depois a ordem da lista
+    function ordenados() {
+        var posicao = {};
+        ordem.forEach(function (id, i) { posicao[id] = i; });
+        return appData.slice().sort(function (a, b) {
+            var fa = favoritos.indexOf(a.id) >= 0 ? 0 : 1;
+            var fb = favoritos.indexOf(b.id) >= 0 ? 0 : 1;
+            if (fa !== fb) return fa - fb;
+            var pa = a.id in posicao ? posicao[a.id] : 1000 + appData.indexOf(a);
+            var pb = b.id in posicao ? posicao[b.id] : 1000 + appData.indexOf(b);
+            return pa - pb;
         });
-    } else {
-        // Se a ordem ainda não estiver no cache, criar os cards na ordem padrão
-        appData.forEach(function(app, index) {
-            createCard(app, index);
+    }
+
+    function visiveis() {
+        var termo = normalizar(termoAtual.trim());
+        return ordenados().filter(function (app) {
+            if (filtroAtual === 'favoritos' && favoritos.indexOf(app.id) < 0) return false;
+            if (filtroAtual === 'novos' && !app.novo) return false;
+            if (categorias[filtroAtual] && app.cat !== filtroAtual) return false;
+            if (!termo) return true;
+            return normalizar(app.nome + ' ' + app.desc + ' ' + categorias[app.cat] + ' ' + dominioDe(app.link)).indexOf(termo) >= 0;
         });
     }
-});
 
-    // Função para criar um card com base nos dados fornecidos
-    function createCard(app, index) {
-        var card = document.createElement("div");
-        card.className = "card";
-        card.draggable = true; // Torna o card arrastável
-        card.setAttribute('data-index', index); // Adiciona o índice do card como um atributo
+    // ---------- Filtros ----------
+    function montarFiltros() {
+        var opcoes = [{ id: 'todas', nome: 'Todas', qtd: appData.length }];
+        if (favoritos.length) opcoes.push({ id: 'favoritos', nome: '★ Favoritas', qtd: favoritos.length });
+        opcoes.push({ id: 'novos', nome: 'Novidades', qtd: appData.filter(function (a) { return a.novo; }).length });
+        Object.keys(categorias).forEach(function (cat) {
+            opcoes.push({ id: cat, nome: categorias[cat], qtd: appData.filter(function (a) { return a.cat === cat; }).length });
+        });
 
-        var heading = document.createElement("h2");
-        heading.innerText = app.text1;
+        if (filtroAtual === 'favoritos' && !favoritos.length) filtroAtual = 'todas';
 
-        var img = document.createElement("img");
-        img.src = app.imgSrc; // Use app.imgSrc instead of app.svg
-        img.alt = "Imagem " + app.text;
-        img.width = 150;
-
-        var para = document.createElement("p");
-        para.innerText = app.desc;
-
-        var link = document.createElement("a");
-        link.href = app.link;
-        link.className = "button";
-        link.innerText = app.text;
-        link.target = "_blank"; // Configura o link para abrir em uma nova aba
-
-        // Adiciona os elementos ao card
-        card.appendChild(heading);
-        card.appendChild(img);
-        card.appendChild(para);
-        card.appendChild(link);
-
-        // Adiciona o card ao corpo do documento
-        document.body.appendChild(card);
-
-        // Adiciona manipuladores de eventos para o card arrastável
-        card.addEventListener('dragstart', handleDragStart, false);
-        card.addEventListener('dragenter', handleDragEnter, false);
-        card.addEventListener('dragover', handleDragOver, false);
-        card.addEventListener('dragleave', handleDragLeave, false);
-        card.addEventListener('drop', handleDrop, false);
-        card.addEventListener('dragend', handleDragEnd, false);
-    }
-
-    // Variável para armazenar o índice do card sendo arrastado
-    var dragSrcEl = null;
-
-    // Manipuladores de eventos para o card arrastável
-    function handleDragStart(e) {
-        dragSrcEl = this;
-
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', this.innerHTML);
-    }
-
-    function handleDragEnter(e) {
-        this.classList.add('drag-over');
-    }
-
-    function handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        e.dataTransfer.dropEffect = 'move';
-        return false;
-    }
-
-    function handleDragLeave(e) {
-        this.classList.remove('drag-over');
-    }
-
-    function handleDrop(e) {
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-
-        if (dragSrcEl !== this) {
-            // Atualiza a ordem dos cards
-            var cards = document.querySelectorAll('.card');
-            var cardOrder = Array.from(cards).map(card => parseInt(card.getAttribute('data-index')));
-            var currentIndex = parseInt(dragSrcEl.getAttribute('data-index'));
-            var dropIndex = parseInt(this.getAttribute('data-index'));
-
-            cardOrder.splice(currentIndex, 1);
-            cardOrder.splice(dropIndex, 0, currentIndex);
-
-            // Armazena a nova ordem no cache
-            localforage.setItem('cardOrder', cardOrder);
-
-            // Reorganiza os cards
-            document.body.innerHTML = '';
-            cardOrder.forEach(function(index) {
-                createCard(appData[index], index);
+        var nav = document.getElementById('filtros');
+        nav.innerHTML = '';
+        opcoes.forEach(function (op) {
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'chip' + (op.id === filtroAtual ? ' ativo' : '');
+            chip.setAttribute('aria-pressed', op.id === filtroAtual);
+            chip.innerHTML = '<span></span><span class="qtd">' + op.qtd + '</span>';
+            chip.firstChild.textContent = op.nome;
+            chip.addEventListener('click', function () {
+                filtroAtual = op.id;
+                montarFiltros();
+                renderizar();
             });
+            nav.appendChild(chip);
+        });
+    }
+
+    // ---------- Cards ----------
+    var iconeAbrir = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+    var iconeEstrela = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2.8 2.85 5.78 6.37.93-4.61 4.49 1.09 6.35L12 17.35 6.3 20.35l1.09-6.35-4.61-4.49 6.37-.93z"/></svg>';
+
+    function criarCard(app, i) {
+        var dominio = dominioDe(app.link);
+        var favorito = favoritos.indexOf(app.id) >= 0;
+
+        var card = document.createElement('article');
+        card.className = 'card';
+        card.style.setProperty('--i', Math.min(i, 30));
+        card.dataset.id = app.id;
+        card.innerHTML =
+            '<div class="card-topo">' +
+                '<div class="logo"></div>' +
+                '<div class="titulo"><h2></h2><span class="cat"></span></div>' +
+            '</div>' +
+            '<p></p>' +
+            '<div class="card-rodape"><span class="dominio"></span><span class="abrir">Abrir ' + iconeAbrir + '</span></div>' +
+            '<a class="card-link" target="_blank" rel="noopener"></a>' +
+            '<button class="estrela' + (favorito ? ' marcada' : '') + '" type="button">' + iconeEstrela + '</button>';
+
+        card.querySelector('h2').textContent = app.nome;
+        if (app.novo) card.querySelector('h2').insertAdjacentHTML('beforeend', '<span class="novo">Novo</span>');
+        card.querySelector('.cat').textContent = categorias[app.cat];
+        card.querySelector('p').textContent = app.desc;
+        card.querySelector('.dominio').textContent = dominio;
+
+        var link = card.querySelector('.card-link');
+        link.href = app.link;
+        link.setAttribute('aria-label', 'Abrir ' + app.nome + ' em nova aba');
+
+        var logo = card.querySelector('.logo');
+        var img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.src = app.img || 'https://www.google.com/s2/favicons?sz=128&domain=' + dominio;
+        img.onerror = function () { logo.innerHTML = '<span class="letra"></span>'; logo.firstChild.textContent = app.nome.charAt(0); };
+        logo.appendChild(img);
+
+        var estrela = card.querySelector('.estrela');
+        estrela.setAttribute('aria-pressed', favorito);
+        estrela.setAttribute('aria-label', (favorito ? 'Remover ' : 'Adicionar ') + app.nome + ' dos favoritos');
+        estrela.addEventListener('click', function () { alternarFavorito(app); });
+
+        card.addEventListener('pointermove', function (e) {
+            var r = card.getBoundingClientRect();
+            card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+            card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+
+        ativarArraste(card);
+        return card;
+    }
+
+    function renderizar() {
+        var lista = visiveis();
+        grade.innerHTML = '';
+
+        if (!lista.length) {
+            var vazio = document.createElement('div');
+            vazio.className = 'vazio';
+            vazio.innerHTML = '<strong>Nada encontrado</strong>Tente outro termo ou escolha "Todas".';
+            grade.appendChild(vazio);
         }
 
-        return false;
+        lista.forEach(function (app, i) { grade.appendChild(criarCard(app, i)); });
+
+        document.getElementById('resumo').textContent =
+            lista.length === appData.length
+                ? appData.length + ' ferramentas'
+                : lista.length + ' de ' + appData.length + ' ferramentas';
     }
 
-    function handleDragEnd(e) {
-        this.classList.remove('drag-over');
+    function alternarFavorito(app) {
+        var pos = favoritos.indexOf(app.id);
+        if (pos >= 0) favoritos.splice(pos, 1); else favoritos.push(app.id);
+        gravar('favoritos', favoritos);
+        avisar(pos >= 0 ? app.nome + ' saiu das favoritas' : app.nome + ' foi para o topo ★');
+        montarFiltros();
+        renderizar();
+        var botao = grade.querySelector('[data-id="' + app.id + '"] .estrela');
+        if (botao) { botao.classList.add('pop'); botao.focus({ preventScroll: true }); }
     }
+
+    // ---------- Arrastar para reordenar ----------
+    var arrastado = null;
+
+    function ativarArraste(card) {
+        card.draggable = true;
+
+        card.addEventListener('dragstart', function (e) {
+            arrastado = card;
+            card.classList.add('arrastando');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', card.dataset.id);
+        });
+
+        card.addEventListener('dragover', function (e) {
+            if (!arrastado || arrastado === card) return;
+            e.preventDefault();
+            card.classList.add('alvo');
+        });
+
+        card.addEventListener('dragleave', function () { card.classList.remove('alvo'); });
+
+        card.addEventListener('drop', function (e) {
+            e.preventDefault();
+            card.classList.remove('alvo');
+            if (!arrastado || arrastado === card) return;
+
+            // Coloca o card arrastado antes ou depois do alvo, conforme a direção
+            var cards = Array.prototype.slice.call(grade.querySelectorAll('.card'));
+            var de = cards.indexOf(arrastado);
+            var para = cards.indexOf(card);
+            grade.insertBefore(arrastado, de < para ? card.nextSibling : card);
+
+            // A nova ordem vale para todos: os cards fora do filtro mantêm a posição relativa
+            var idsNaTela = Array.prototype.map.call(grade.querySelectorAll('.card'), function (c) { return c.dataset.id; });
+            var completa = ordenados().map(function (a) { return a.id; });
+            var vagas = completa.map(function (id, i) { return idsNaTela.indexOf(id) >= 0 ? i : -1; }).filter(function (i) { return i >= 0; });
+            vagas.forEach(function (vaga, k) { completa[vaga] = idsNaTela[k]; });
+            ordem = completa;
+            gravar('ordem', ordem);
+        });
+
+        card.addEventListener('dragend', function () {
+            card.classList.remove('arrastando');
+            arrastado = null;
+        });
+    }
+
+    // ---------- Busca e atalhos ----------
+    campoBusca.addEventListener('input', function () {
+        termoAtual = campoBusca.value;
+        renderizar();
+    });
+
+    campoBusca.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            var primeiro = grade.querySelector('.card-link');
+            if (primeiro) window.open(primeiro.href, '_blank', 'noopener');
+        }
+        if (e.key === 'Escape') {
+            campoBusca.value = '';
+            termoAtual = '';
+            renderizar();
+            campoBusca.blur();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        var digitando = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+        if ((e.key === '/' && !digitando) || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey))) {
+            e.preventDefault();
+            campoBusca.focus();
+            campoBusca.select();
+        }
+    });
+
+    // ---------- Tema ----------
+    document.getElementById('alternarTema').addEventListener('click', function () {
+        var atual = document.documentElement.getAttribute('data-theme')
+            || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var novo = atual === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', novo);
+        try { localStorage.setItem('tema', novo); } catch (e) {}
+    });
+
+    // ---------- Aviso ----------
+    var temporizador;
+    function avisar(texto) {
+        var toast = document.getElementById('toast');
+        toast.textContent = texto;
+        toast.classList.add('visivel');
+        clearTimeout(temporizador);
+        temporizador = setTimeout(function () { toast.classList.remove('visivel'); }, 2200);
+    }
+
+    document.getElementById('contagem').textContent =
+        appData.length + ' ferramentas gratuitas · ' + appData.filter(function (a) { return a.novo; }).length + ' novas';
+
+    montarFiltros();
+    renderizar();
 </script>
-
 </body>
 </html>
